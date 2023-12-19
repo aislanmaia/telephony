@@ -9,6 +9,7 @@ defmodule Subscriber.SubscriberTest do
       id: "123",
       phone_number: "123"
     }
+
     # When
     result = Subscriber.new(payload)
     # Then
@@ -18,6 +19,7 @@ defmodule Subscriber.SubscriberTest do
       phone_number: "123",
       subscriber_type: :prepaid
     }
+
     assert expect == result
   end
 end
