@@ -57,9 +57,12 @@ defmodule Telephony.Core.PrepaidTest do
     expect = %Subscriber{
       full_name: "Aislan",
       phone_number: "123",
-      subscriber_type: %Prepaid{credits: 110, recharges: [
-        %Recharge{value: 100, date: date}
-      ]},
+      subscriber_type: %Prepaid{
+        credits: 110,
+        recharges: [
+          %Recharge{value: 100, date: date}
+        ]
+      },
       calls: []
     }
 
