@@ -1,6 +1,6 @@
 defmodule Telephony.Core.Prepaid do
-  alias Telephony.Core.Invoice
   alias Telephony.Core.Call
+  alias Telephony.Core.Invoice
   alias Telephony.Core.Recharge
   defstruct credits: 0, recharges: []
   @price_per_minute 1.45
