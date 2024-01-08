@@ -1,64 +1,48 @@
 defmodule Telephony.Core.PospaidTest do
   use ExUnit.Case
-  alias Telephony.Core.{Call, Invoice, Pospaid, Subscriber}
+  alias Telephony.Core.{Call, Pospaid}
 
   setup do
-    subscriber = %Subscriber{
-      full_name: "Aislan",
-      phone_number: "123",
-      subscriber_type: %Pospaid{spent: 0},
-      calls: []
-    }
-
-    %{subscriber: subscriber}
+    %{pospaid: %Pospaid{spent: 0}}
   end
 
-  test "make a call", %{subscriber: subscriber} do
+  test "make a call", %{pospaid: pospaid} do
     time_spent = 2
     date = NaiveDateTime.utc_now()
-    result = Pospaid.make_call(subscriber, time_spent, date)
+    result = Subscriber.make_call(pospaid, time_spent, date)
 
-    expect = %Subscriber{
-      full_name: "Aislan",
-      phone_number: "123",
-      subscriber_type: %Pospaid{spent: 2.08},
-      calls: [
-        %Call{
-          time_spent: 2,
-          date: date
-        }
-      ]
-    }
+    expect = {%Pospaid{spent: 2.08}, %Call{time_spent: 2, date: date}}
 
     assert expect == result
+  end
+
+  test "try to make a recharge" do
+    pospaid = %Pospaid{spent: 90 * 1.04}
+
+    assert {:error, "Pospaid can't make a recharge"} =
+             Subscriber.make_recharge(pospaid, 100, Date.utc_today())
   end
 
   test "print invoice" do
     date = ~D[2023-12-23]
     last_month = ~D[2023-11-23]
 
-    subscriber = %Subscriber{
-      full_name: "Aislan",
-      phone_number: "123",
-      subscriber_type: %Pospaid{spent: 90 * 1.04},
-      calls: [
-        %Call{
-          time_spent: 10,
-          date: date
-        },
-        %Call{
-          time_spent: 50,
-          date: last_month
-        },
-        %Call{
-          time_spent: 30,
-          date: last_month
-        }
-      ]
-    }
+    pospaid = %Pospaid{spent: 90 * 1.04}
 
-    subscriber_type = subscriber.subscriber_type
-    calls = subscriber.calls
+    calls = [
+      %Call{
+        time_spent: 10,
+        date: date
+      },
+      %Call{
+        time_spent: 50,
+        date: last_month
+      },
+      %Call{
+        time_spent: 30,
+        date: last_month
+      }
+    ]
 
     expect = %{
       value_spent: 80 * 1.04,
@@ -76,6 +60,6 @@ defmodule Telephony.Core.PospaidTest do
       ]
     }
 
-    assert expect == Invoice.print(subscriber_type, calls, 2023, 11)
+    assert expect == Subscriber.print_invoice(pospaid, calls, 2023, 11)
   end
 end
