@@ -6,13 +6,13 @@ defmodule Telephony.Core.SubscriberTest do
     pospaid = %Subscriber{
       full_name: "Aislan",
       phone_number: "123",
-      subscriber_type: %Pospaid{spent: 0}
+      type: %Pospaid{spent: 0}
     }
 
     prepaid = %Subscriber{
       full_name: "Aislan",
       phone_number: "123",
-      subscriber_type: %Prepaid{credits: 10, recharges: []}
+      type: %Prepaid{credits: 10, recharges: []}
     }
 
     %{pospaid: pospaid, prepaid: prepaid}
@@ -23,7 +23,7 @@ defmodule Telephony.Core.SubscriberTest do
     payload = %{
       full_name: "Aislan",
       phone_number: "123",
-      subscriber_type: :prepaid
+      type: :prepaid
     }
 
     # When
@@ -33,7 +33,7 @@ defmodule Telephony.Core.SubscriberTest do
     expected = %Subscriber{
       full_name: "Aislan",
       phone_number: "123",
-      subscriber_type: %Prepaid{credits: 0, recharges: []}
+      type: %Prepaid{credits: 0, recharges: []}
     }
 
     assert expected == result
@@ -43,7 +43,7 @@ defmodule Telephony.Core.SubscriberTest do
     payload = %{
       full_name: "Aislan",
       phone_number: "123",
-      subscriber_type: :pospaid
+      type: :pospaid
     }
 
     result = Subscriber.new(payload)
@@ -51,7 +51,7 @@ defmodule Telephony.Core.SubscriberTest do
     expected = %Subscriber{
       full_name: "Aislan",
       phone_number: "123",
-      subscriber_type: %Pospaid{spent: 0}
+      type: %Pospaid{spent: 0}
     }
 
     assert expected == result
@@ -61,7 +61,7 @@ defmodule Telephony.Core.SubscriberTest do
     subscriber = %Subscriber{
       full_name: "Aislan",
       phone_number: "123",
-      subscriber_type: %Prepaid{credits: 10, recharges: []}
+      type: %Prepaid{credits: 10, recharges: []}
     }
 
     date = Date.utc_today()
@@ -70,7 +70,7 @@ defmodule Telephony.Core.SubscriberTest do
              %Subscriber{
                full_name: "Aislan",
                phone_number: "123",
-               subscriber_type: %Prepaid{credits: 8.55, recharges: []},
+               type: %Prepaid{credits: 8.55, recharges: []},
                calls: %Call{time_spent: 1, date: date}
              }
   end
@@ -79,7 +79,7 @@ defmodule Telephony.Core.SubscriberTest do
     subscriber = %Subscriber{
       full_name: "Aislan",
       phone_number: "123",
-      subscriber_type: %Prepaid{credits: 0, recharges: []}
+      type: %Prepaid{credits: 0, recharges: []}
     }
 
     date = Date.utc_today()
@@ -92,7 +92,7 @@ defmodule Telephony.Core.SubscriberTest do
     subscriber = %Subscriber{
       full_name: "Aislan",
       phone_number: "123",
-      subscriber_type: %Pospaid{spent: 0}
+      type: %Pospaid{spent: 0}
     }
 
     date = Date.utc_today()
@@ -105,7 +105,7 @@ defmodule Telephony.Core.SubscriberTest do
                },
                full_name: "Aislan",
                phone_number: "123",
-               subscriber_type: %Pospaid{spent: 1.04}
+               type: %Pospaid{spent: 1.04}
              }
   end
 end
