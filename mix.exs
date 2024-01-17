@@ -4,7 +4,7 @@ defmodule Telephony.MixProject do
   def project do
     [
       app: :telephony,
-      version: "1.2.5",
+      version: "1.2.6",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
