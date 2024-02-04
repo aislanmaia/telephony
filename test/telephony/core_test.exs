@@ -170,15 +170,7 @@ defmodule Telephony.CoreTest do
   end
 
   test "make a call", %{subscribers: subscribers} do
-    expected =
-      {[
-         %Subscriber{
-           full_name: "Aislan",
-           phone_number: "456",
-           type: %Pospaid{spent: 0},
-           calls: []
-         }
-       ], {:error, "Subscriber doest not have credits"}}
+    expected = {:error, "Subscriber doest not have credits"}
 
     date = Date.utc_today()
     result = Core.make_call(subscribers, "123", 1, date)

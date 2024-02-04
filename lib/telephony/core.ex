@@ -52,7 +52,7 @@ defmodule Telephony.Core do
     |> search_subscriber(phone_number)
     |> then(fn subscriber ->
       if is_nil(subscriber) do
-        subscribers
+        {subscribers, :error, "Subscriber not found"}
       else
         fun.(subscriber)
       end
@@ -63,8 +63,8 @@ defmodule Telephony.Core do
     Enum.map(subscribers, &Subscriber.print_invoice(&1, year, month))
   end
 
-  defp update_subscriber(subscribers, {:error, _message} = err) do
-    {subscribers, err}
+  defp update_subscriber(_subscribers, {:error, _message} = err) do
+    err
   end
 
   defp update_subscriber(subscribers, subscriber) do
