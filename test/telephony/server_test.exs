@@ -14,6 +14,16 @@ defmodule Telephony.ServerTest do
     %{pid: pid, process_name: :test, payload: payload}
   end
 
+  test "start_link", %{pid: pid} do
+    # Inicia o GenServer
+    result = Telephony.Server.start_link(:telephony)
+
+    assert {:error, {:already_started, _pid}} = result
+
+    # Verifica se o GenServer foi iniciado
+    assert GenServer.whereis(:test) == pid
+  end
+
   test "check telephony subscribers state", %{pid: pid} do
     assert [] = :sys.get_state(pid)
   end
@@ -51,6 +61,9 @@ defmodule Telephony.ServerTest do
   end
 
   test "search subscriber", %{process_name: process_name, payload: payload} do
+    result = GenServer.call(process_name, {:search_subscriber, payload.phone_number})
+    assert result == nil
+
     GenServer.call(process_name, {:create_subscriber, payload})
     result = GenServer.call(process_name, {:search_subscriber, payload.phone_number})
     assert result.full_name == payload.full_name
@@ -68,6 +81,13 @@ defmodule Telephony.ServerTest do
     state = :sys.get_state(pid)
     subscriber_state = hd(state)
     refute subscriber_state.type.recharges == []
+
+    :ok = GenServer.cast(process_name, {:make_recharge, "999", 50, date})
+
+    state = :sys.get_state(pid)
+    subscriber_state = hd(state)
+
+    assert length(subscriber_state.type.recharges) == 1
   end
 
   test "make a success call", %{pid: pid, process_name: process_name, payload: payload} do
@@ -96,7 +116,7 @@ defmodule Telephony.ServerTest do
 
     result = GenServer.call(process_name, {:make_call, phone_number, time_spent, date})
 
-    assert result == {:error, "Subscriber doest not have credits"}
+    assert {:error, "Subscriber doest not have credits"} == result
   end
 
   test "print invoice", %{process_name: process_name, payload: payload} do

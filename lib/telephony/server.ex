@@ -1,5 +1,5 @@
 defmodule Telephony.Server do
-  @behaviour GenServer
+  use GenServer
   alias Telephony.Core
 
   def start_link(server_name) do
@@ -22,8 +22,11 @@ defmodule Telephony.Server do
 
   def handle_call({:make_call, phone_number, time_spent, date}, _, subscribers) do
     case Core.make_call(subscribers, phone_number, time_spent, date) do
-      {:error, _} = err -> {:reply, err, subscribers}
-      {subscribers, subscriber} -> {:reply, subscriber, subscribers}
+      {:error, _} = err ->
+        {:reply, err, subscribers}
+
+      {subscribers, subscriber} ->
+        {:reply, subscriber, subscribers}
     end
   end
 
@@ -39,7 +42,7 @@ defmodule Telephony.Server do
 
   def handle_cast({:make_recharge, phone_number, value, date}, subscribers) do
     case Core.make_recharge(subscribers, phone_number, value, date) do
-      {:error, _} -> {:noreply, subscribers}
+      {subscribers, :error, _} -> {:noreply, subscribers}
       {subscribers, _} -> {:noreply, subscribers}
     end
   end
